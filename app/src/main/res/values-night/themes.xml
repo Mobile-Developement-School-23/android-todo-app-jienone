@@ -1,0 +1,37 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.YandexToDo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+
+
+        <item name="colorPrimary">@color/DarkBlue</item>
+        <item name="colorPrimaryVariant">@color/DarkLabelPrimary</item>
+        <item name="colorOnPrimary">@color/DarkDisable</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/DarkBlue</item>
+        <item name="customColorValue">@color/DarkGreen</item>
+        <item name="colorSecondaryVariant">@color/DarkBackSecondary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnError">@color/DarkRed</item>
+        <item name="colorOnSurface">@color/DarkDisable</item>
+        <item name="statusBarBackground">@color/dark_back_primary</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/dark_back_primary</item>
+        <!-- Customize your theme here. -->
+        <item name="android:spinnerItemStyle">@style/mySpinnerItemSelectedStyle</item>
+    </style>
+    <style name="mySpinnerItemSelectedStyle" parent="@android:style/Widget.Holo.TextView.SpinnerItem">
+        <item name="android:textColor">@color/DarkTertiary</item>
+    </style>
+    <style name="btnDeleteColor">
+        <item name="color">@color/DarkDisable</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">
+        <!-- Customize the toolbar background, title color, etc. -->
+        <item name="android:background">@color/light_back_primary</item>
+        <item name="android:textColorPrimary">@color/LightLabelPrimary</item>
+    </style>
+
+
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="LightLabelPrimary">#FF000000</color>
+    <color name="LightWhite">#FFFFFFFF</color>
+    <color name="LightSeparator">#33000000</color>
+    <color name="LightOverlay">#0F000000</color>
+    <color name="LightLabelSecondary">#99000000</color>
+    <color name="LightTertiary">#4D000000</color>
+    <color name="LightDisable">#26000000</color>
+    <color name="LightRed">#FF3B30</color>
+    <color name="LightGreen">#34C759</color>
+    <color name="LightBlue">#007AFF</color>
+    <color name="LightGray">#8E8E93</color>
+    <color name="LightGrayLight">#D1D1D6</color>
+    <color name="light_back_primary">#F7F6F2</color>
+    <color name="LightBackSecondary">#FFFFFF</color>
+    <color name="LightBackElevated">#FFFFFF</color>
+    <color name="DarkLabelPrimary">#FFFFFF</color>
+    <color name="DarkWhite">#FFFFFFFF</color>
+    <color name="DarkSeparator">#33FFFFFF</color>
+    <color name="DarkOverlay">#52000000</color>
+    <color name="DarkLabelSecondary">#99FFFFFF</color>
+    <color name="DarkTertiary">#66FFFFFF</color>
+    <color name="DarkDisable">#26FFFFFF</color>
+    <color name="DarkRed">#FF453A</color>
+    <color name="DarkGreen">#32D74B</color>
+    <color name="DarkBlue">#0A84FF</color>
+    <color name="DarkGray">#8E8E93</color>
+    <color name="DarkGrayLight">#48484A</color>
+    <color name="dark_back_primary">#161618</color>
+    <color name="DarkBackSecondary">#252528</color>
+    <color name="DarkBackElevated">#3C3C3F</color>
+
+</resources>

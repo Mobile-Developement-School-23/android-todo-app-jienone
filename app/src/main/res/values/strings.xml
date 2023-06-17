@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Yandex ToDo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Пустой фрагмент</string>
+    <string name="add_to_do">добавить задание</string>
+    <string name="empty_todo_list_message">У вас нет ни одной задачи. Время создать свой первый список и начать продуктивный день!</string>
+    <string name="edit_text_hint_title">заголовк</string>
+    <string name="edit_text_hint_desc">описание</string>
+    <string name="content_desc_back_to_previous_screen">вернуться на предыдущий экран</string>
+    <string name="add">Сохранить</string>
+    <string name="delete">Удалить</string>
+    <string name="empty_et_desc">Введите текст, чтобы продолжить</string>
+    <string name="update">Обновить</string>
+    <string name="btn_info">INFO</string>
+
+    <string-array name="options">
+        <item>Нет</item>
+        <item>Низкий</item>
+        <item>!!Высокий</item>
+    </string-array>
+</resources>

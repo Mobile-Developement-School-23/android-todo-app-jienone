@@ -1,0 +1,44 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.YandexToDo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+
+        <item name="colorPrimary">@color/LightBlue</item>
+        <item name="colorPrimaryVariant">@color/LightLabelPrimary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/LightBlue</item>
+
+        <item name="colorSecondaryVariant">@color/LightBackSecondary</item>
+        <item name="customColorValue">@color/LightGreen</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnError">@color/LightRed</item>
+        <item name="statusBarBackground">@color/light_back_primary</item>
+        <item name="colorOnSurface">@color/LightDisable</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/light_back_primary</item>
+        <!-- Customize your theme here. -->
+        <item name="android:spinnerItemStyle">@style/mySpinnerItemSelectedStyle</item>
+    </style>
+    <style name="mySpinnerItemSelectedStyle" parent="@android:style/Widget.Holo.TextView.SpinnerItem">
+        <item name="android:textColor">@color/LightTertiary</item>
+    </style>
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">
+        <!-- Customize the toolbar background, title color, etc. -->
+        <item name="android:background">@color/light_back_primary</item>
+        <item name="android:textColorPrimary">@color/LightLabelPrimary</item>
+    </style>
+
+
+
+    <style name="btnDisabled">
+        <item name="color">@color/LightDisable</item>
+    </style>
+
+</resources>
