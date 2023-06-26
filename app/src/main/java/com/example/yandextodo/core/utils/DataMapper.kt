@@ -12,23 +12,18 @@ import com.example.yandextodo.data.TodoEntity
 object DataMapper {
 
     fun mapTodoEntitiesToDomain(list: List<TodoEntity>): List<Model> {
-        val newList = ArrayList<Model>()
-
-        list.map { todoEntity ->
-            val todo = Model(
-                id = todoEntity.id.toString(),
-                description = todoEntity.description,
-                createdAt = todoEntity.createdAt,
-                updatedAt = todoEntity.updatedAt,
-                deadline = todoEntity.deadline,
-                priority = todoEntity.priority,
-                flag = todoEntity.flag,
-                lastUpdatedBy = todoEntity.lastUpdatedBy
+        return list.map {
+            Model(
+                id = it.id.toString(),
+                deadline = it.deadline,
+                description = it.description,
+                lastUpdatedBy = it.lastUpdatedBy,
+                flag = it.flag,
+                createdAt = it.createdAt,
+                updatedAt = it.updatedAt,
+                priority = it.priority
             )
-            newList.add(todo)
         }
-
-        return newList
     }
 
 

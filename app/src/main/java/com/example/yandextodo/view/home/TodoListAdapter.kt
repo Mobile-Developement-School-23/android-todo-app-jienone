@@ -16,30 +16,20 @@ import com.example.yandextodo.data.Model
 import com.example.yandextodo.databinding.ItemTodoBinding
 
 class TodoListAdapter(
-    private val viewmodel: HomeViewModel,
-    private val homeFragment: HomeFragment
+    private val viewModel: HomeViewModel,
 ) : ListAdapter<Model, TodoListAdapter.TodoViewHolder>(TODO_ITEM_COMPARATOR) {
 
-
     var onItemClicked: ((Model) -> Unit)? = null
-
-
-
     inner class TodoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val binding = ItemTodoBinding.bind(view)
-
-
-        var cbCounter = 0
         private val checkBox = binding.checkboxCompleted
-
         fun bind(data: Model) {
             binding.textDescription.text = if (data.priority == "!!Высокий") {
                 "‼ ${data.description}"
             } else {
                 data.description
             }
-
             binding.priority.text = if (data.priority == "!!Высокий") {
                 "‼"
             } else if(data.priority == "Низкий"){
@@ -49,13 +39,10 @@ class TodoListAdapter(
 
             binding.textDescription.text = data.description
             binding.textDate.text = data.deadline
-            Log.d("DATAAAAAAAAAAAA", data.deadline)
-
-
             checkBox.setOnCheckedChangeListener(null) // Remove previous listener to avoid recursion
 
             // Retrieve the checkbox state from the ViewModel
-            val isChecked = viewmodel.getCheckboxState(data.id.toInt())
+            val isChecked = data.flag
 
             // Update the checkbox state without triggering the listener
             checkBox.isChecked = isChecked
@@ -75,19 +62,26 @@ class TodoListAdapter(
             }
             checkBox.buttonTintList = ColorStateList.valueOf(checkboxColor)
 
-            checkBox.setOnCheckedChangeListener { _, isChecked ->
+            checkBox.setOnCheckedChangeListener { _, flag ->
                 // Update the checkbox state in the ViewModel
-                viewmodel.setCheckboxState(data.id.toInt(), isChecked)
-                binding.textDescription.setStrikeThrough(isChecked)
-                data.flag = isChecked
+                if (data.flag) {
+                    viewModel.offCheckboxState(position)
+                    binding.textDescription.setStrikeThrough(flag)
+                }
+                else {
+                    viewModel.setCheckboxState(position)
+                    binding.textDescription.setStrikeThrough(flag)
+                }
+                notifyItemChanged(data.id.toInt())
+
 
 
                 // Change checkbox color dynamically based on priority and checkbox state
                 val newCheckboxColor = when {
-                    isChecked && priority == "!!Высокий" -> ContextCompat.getColor(itemView.context, R.color.DarkGreen)
+                    flag && priority == "!!Высокий" -> ContextCompat.getColor(itemView.context, R.color.DarkGreen)
                     priority == "!!Высокий" -> ContextCompat.getColor(itemView.context, R.color.DarkRed)
                     else -> {
-                        if (isChecked) {
+                        if (flag) {
                             ContextCompat.getColor(itemView.context, R.color.DarkGreen)
                         } else {
                             ContextCompat.getColor(itemView.context, R.color.LightGray)

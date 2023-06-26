@@ -12,11 +12,14 @@
     <string name="empty_et_desc">Введите текст, чтобы продолжить</string>
     <string name="update">Обновить</string>
     <string name="btn_info">INFO</string>
-    <string name="counter_text">"Выполнено - "</string>
+    <string name="counter_text">"Выполнено - %d"</string>
+    <string name="low">"Нет"</string>
+    <string name="basic">"Низкий"</string>
+    <string name="important">"!!Важный "</string>
 
     <string-array name="options">
-        <item>Нет</item>
-        <item>Низкий</item>
-        <item>!!Высокий</item>
+        <item>@string/low</item>
+        <item>@string/basic</item>
+        <item>@string/important</item>
     </string-array>
 </resources>

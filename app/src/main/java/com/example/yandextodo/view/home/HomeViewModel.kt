@@ -31,11 +31,12 @@ class HomeViewModel(private val repository: TodoRepository) : ViewModel() {
             _todos.value = LoadResult.Error(message = e.message.toString())
         }
     }
-    fun setCheckboxState(itemId: Int, isChecked: Boolean) {
-        checkboxStates[itemId] = isChecked
-        getAllTodos()
-    }
 
+
+//    fun setCheckboxState(itemId: Int, isChecked: Boolean) {
+//        checkboxStates[itemId] = isChecked
+//        getAllTodos()
+//    }
     fun getCheckboxState(itemId: Int): Boolean {
         getAllTodos()
         return checkboxStates[itemId] ?: false
@@ -50,5 +51,27 @@ class HomeViewModel(private val repository: TodoRepository) : ViewModel() {
             }
         }
         getAllTodos()
+    }
+    fun setCheckboxState(position: Int) = viewModelScope.launch {
+        val todos = _todos.value
+        if (todos is LoadResult.Success) {
+            val todoList = todos.data
+            if (todoList?.indices?.contains(position) == true) {
+                val todo = todoList.getOrNull(position)
+                todo?.flag = true
+                todo?.let { repository.markAsDone(it) }
+            }
+        }
+    }
+    fun offCheckboxState(position: Int) = viewModelScope.launch {
+        val todos = _todos.value
+        if (todos is LoadResult.Success) {
+            val todoList = todos.data
+            if (todoList?.indices?.contains(position) == true) {
+                val todo = todoList.getOrNull(position)
+                todo?.flag = false
+                todo?.let { repository.markAsNotDone(it) }
+            }
+        }
     }
 }

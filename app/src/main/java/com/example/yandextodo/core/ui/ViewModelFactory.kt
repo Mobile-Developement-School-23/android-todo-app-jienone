@@ -15,7 +15,9 @@ class ViewModelFactory(private val todoRepository: TodoRepository) : ViewModelPr
 
         fun getInstance(todoRepository: TodoRepository): ViewModelFactory =
             instance ?: synchronized(this) {
-                instance ?: ViewModelFactory(todoRepository).apply { instance = this }
+                instance
+                    ?: ViewModelFactory(todoRepository)
+                        .apply { instance = this }
             }
     }
 

@@ -9,6 +9,7 @@ import com.example.yandextodo.R
 import com.example.yandextodo.view.home.HomeViewModel
 import com.example.yandextodo.view.home.TodoListAdapter
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+import kotlinx.coroutines.runBlocking
 
 abstract class SwipeGesture(
     context: Context,
@@ -40,11 +41,17 @@ abstract class SwipeGesture(
                     viewModel.deleteTodo(position = position)
                 }
             }
+
             ItemTouchHelper.RIGHT -> {
                 item?.let { todo ->
-                    viewModel.setCheckboxState(isChecked = true, itemId = todo.id.toInt())
-                    adapter.currentList[position].flag = true
+                    if (todo.flag) {
+                        runBlocking { viewModel.offCheckboxState(position) }
+                    }
+                    else {
+                        runBlocking{ viewModel.setCheckboxState(position) }
+                    }
                     adapter.notifyItemChanged(position)
+
                 }
             }
         }

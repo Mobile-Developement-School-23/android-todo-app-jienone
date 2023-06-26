@@ -19,7 +19,11 @@ import com.example.yandextodo.core.di.Injection
 import com.example.yandextodo.core.utils.SwipeGesture
 import com.example.yandextodo.core.vo.LoadResult
 import com.example.yandextodo.data.Model
+import com.example.yandextodo.data.TodoDatabase
+import com.example.yandextodo.data.TodoLocalDataSource
+import com.example.yandextodo.data.TodoRepository
 import com.example.yandextodo.databinding.FragmentHomeBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 const val REQUEST_LOGIN_SDK = ""
@@ -27,9 +31,10 @@ const val REQUEST_LOGIN_SDK = ""
 
 class HomeFragment : Fragment(), View.OnClickListener {
 
+    private lateinit var todoRepository: TodoRepository
+
     private var _binding: FragmentHomeBinding? = null
 
-    var cbCounter = 0
     private val binding get() = _binding!!
     private val viewModel by viewModels<HomeViewModel> {
         Injection.provideViewModelFactory(requireContext())
@@ -45,8 +50,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
     ): View {
 
 
-
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -55,8 +58,15 @@ class HomeFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tvCompleted = binding.tvCompleted
+        todoRepository = TodoRepository.getInstance(
+            TodoLocalDataSource.getInstance(
+                TodoDatabase.getInstance(requireContext()).getTodoDao(),
+                Dispatchers.IO
+            ),
+            Dispatchers.IO
+        )
 
+        tvCompleted = binding.tvCompleted
 
         var isVisible = true
         val eye = view.findViewById<ImageView>(R.id.iv_eye)
@@ -70,7 +80,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         viewModel.getAllTodos()
 
-        todoListAdapter = TodoListAdapter(viewModel, this)
+        todoListAdapter = TodoListAdapter(viewModel)
         todoListAdapter.onItemClicked = { todo ->
             goToDetailFragment(todo)
         }
@@ -107,7 +117,14 @@ class HomeFragment : Fragment(), View.OnClickListener {
                             showLoadingState(false)
                         }
                     }
+                    lifecycleScope.launch {
+                        val count = todoRepository.countElementsWithProperty()
+                        tvCompleted!!.text = getString(R.string.counter_text, count)
+
+                    }
+
                 }
+
             }
         }
     }
@@ -117,11 +134,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
             R.id.fab_add -> goToDetailFragment()
         }
     }
-//    private fun startYandexAuth() {
-//        val loginOptionsBuilder = YandexAuthLoginOptions.Builder()
-//        val intent = sdk.createLoginIntent(loginOptionsBuilder.build())
-//    }
-
 
     private fun goToDetailFragment(todo: Model? = null) {
         val action = HomeFragmentDirections.actionHomeFragment2ToDetailFragment2()
@@ -141,10 +153,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    fun updateCounter() {
-        tvCompleted!!.text = "Выполнено - $cbCounter"
     }
 }
 

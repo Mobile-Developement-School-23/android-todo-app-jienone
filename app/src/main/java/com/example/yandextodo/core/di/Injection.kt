@@ -24,8 +24,16 @@ object Injection {
         )
 
     private fun provideTodoRepository(context: Context) =
-        TodoRepository.getInstance(provideTodoLocalDataSource(context), provideIODispatcher())
+        TodoRepository.getInstance(
+            provideTodoLocalDataSource(
+                context
+            ), provideIODispatcher()
+        )
 
     fun provideViewModelFactory(context: Context) =
-        ViewModelFactory.getInstance(provideTodoRepository(context))
+        ViewModelFactory.getInstance(
+            provideTodoRepository(
+                context
+            )
+        )
 }

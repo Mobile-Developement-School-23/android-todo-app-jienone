@@ -1,7 +1,7 @@
 package com.example.yandextodo.data
 
-import com.example.yandextodo.core.vo.LoadResult
 import com.example.yandextodo.core.utils.DataMapper
+import com.example.yandextodo.core.vo.LoadResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +28,6 @@ class TodoRepository(
             }
 
     }
-
     suspend fun getAllTodos(): Flow<LoadResult<List<Model>>> {
         return withContext(dispatcher) {
             return@withContext todoLocalDataSource.getAllTodos().map {
@@ -36,6 +35,7 @@ class TodoRepository(
             }
         }
     }
+
 
     suspend fun addTodo(todo: Model) {
         withContext(dispatcher) {
@@ -52,6 +52,22 @@ class TodoRepository(
     suspend fun deleteTodo(todo: Model) {
         withContext(dispatcher) {
             todoLocalDataSource.deleteTodoFromDatabase(DataMapper.mapTodoDomainToEntity(todo))
+        }
+    }
+
+    suspend fun markAsDone(todo: Model) {
+        withContext(dispatcher) {
+            todoLocalDataSource.markAsDone(DataMapper.mapTodoDomainToEntity(todo))
+        }
+    }
+    suspend fun markAsNotDone(todo: Model) {
+        withContext(dispatcher) {
+            todoLocalDataSource.markAsNotDone(DataMapper.mapTodoDomainToEntity(todo))
+        }
+    }
+    suspend fun countElementsWithProperty(): Int {
+        return withContext(dispatcher) {
+            return@withContext todoLocalDataSource.countElementsWithProperty()
         }
     }
 

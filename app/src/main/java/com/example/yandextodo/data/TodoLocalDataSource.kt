@@ -34,6 +34,11 @@ class TodoLocalDataSource(
             todoDao.addTodo(todoEntity)
         }
     }
+    suspend fun countElementsWithProperty(): Int {
+        return withContext(dispatcher) {
+            return@withContext todoDao.countElementsWithProperty()
+        }
+    }
 
     suspend fun deleteTodoFromDatabase(todoEntity: TodoEntity) {
         withContext(dispatcher) {
@@ -44,6 +49,16 @@ class TodoLocalDataSource(
     suspend fun updateTodo(todoEntity: TodoEntity) {
         withContext(dispatcher) {
             todoDao.updateTodo(todoEntity)
+        }
+    }
+    suspend fun markAsDone(todoEntity: TodoEntity) {
+        withContext(dispatcher) {
+            todoDao.markAsDone(todoEntity)
+        }
+    }
+    suspend fun markAsNotDone(todoEntity: TodoEntity) {
+        withContext(dispatcher) {
+            todoDao.markAsNotDone(todoEntity)
         }
     }
 
