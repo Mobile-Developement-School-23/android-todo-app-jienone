@@ -16,13 +16,14 @@ object DataMapper {
 
         list.map { todoEntity ->
             val todo = Model(
-                id = todoEntity.id,
+                id = todoEntity.id.toString(),
                 description = todoEntity.description,
                 createdAt = todoEntity.createdAt,
                 updatedAt = todoEntity.updatedAt,
                 deadline = todoEntity.deadline,
                 priority = todoEntity.priority,
-                flag = false
+                flag = todoEntity.flag,
+                lastUpdatedBy = todoEntity.lastUpdatedBy
             )
             newList.add(todo)
         }
@@ -33,13 +34,14 @@ object DataMapper {
 
     fun mapTodoDomainToEntity(todo: Model): TodoEntity {
         return TodoEntity(
-            id = todo.id,
+            id = todo.id.toInt(),
             description = todo.description,
             createdAt = todo.createdAt,
             updatedAt = todo.updatedAt,
             deadline = todo.deadline,
             priority = todo.priority,
-            flag = false
+            flag = todo.flag,
+            lastUpdatedBy = todo.lastUpdatedBy
         )
     }
 

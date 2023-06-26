@@ -9,6 +9,8 @@
         <item name="colorOnPrimary">@color/DarkDisable</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/DarkBlue</item>
+        <item name="cardBackgroundColor">@color/DarkBackSecondary</item>
+
         <item name="customColorValue">@color/DarkGreen</item>
         <item name="colorSecondaryVariant">@color/DarkBackSecondary</item>
         <item name="colorOnSecondary">@color/white</item>
@@ -29,8 +31,11 @@
 
     <style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">
         <!-- Customize the toolbar background, title color, etc. -->
-        <item name="android:background">@color/light_back_primary</item>
-        <item name="android:textColorPrimary">@color/LightLabelPrimary</item>
+        <item name="android:background">@color/dark_back_primary</item>
+        <item name="android:textColorPrimary">@color/dark_back_primary</item>
+    </style>
+    <style name="btnDeleteColor.">
+        <item name="backgroundTint">@color/DarkRed</item>
     </style>
 
 

@@ -33,9 +33,11 @@ class HomeViewModel(private val repository: TodoRepository) : ViewModel() {
     }
     fun setCheckboxState(itemId: Int, isChecked: Boolean) {
         checkboxStates[itemId] = isChecked
+        getAllTodos()
     }
 
     fun getCheckboxState(itemId: Int): Boolean {
+        getAllTodos()
         return checkboxStates[itemId] ?: false
     }
     fun deleteTodo(position: Int) = viewModelScope.launch {
@@ -47,8 +49,6 @@ class HomeViewModel(private val repository: TodoRepository) : ViewModel() {
                 todo?.let { repository.deleteTodo(it) }
             }
         }
+        getAllTodos()
     }
-
-
-
 }

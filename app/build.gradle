@@ -64,5 +64,7 @@ dependencies {
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
     // coordinator layout
     implementation 'com.google.android.material:material:1.9.0'
+    //
+    implementation 'it.xabaras.android:recyclerview-swipedecorator:1.4'
 
 }

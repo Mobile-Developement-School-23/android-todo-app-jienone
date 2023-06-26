@@ -226,7 +226,9 @@ class DetailFragment : Fragment(), View.OnClickListener {
                                     flag = false,
                                     createdAt = it.createdAt,
                                     updatedAt = System.currentTimeMillis(),
-                                )
+                                    lastUpdatedBy = System.currentTimeMillis().toString(),
+
+                                    )
 
                                 viewModel.updateTodo(todo)
                             }
@@ -244,7 +246,9 @@ class DetailFragment : Fragment(), View.OnClickListener {
                             updatedAt = System.currentTimeMillis(),
                             priority = selectedSpinnerItem,
                             deadline = deadline,
-                            flag = false
+                            flag = false,
+                            lastUpdatedBy = System.currentTimeMillis().toString(),
+
                         )
                         viewModel.addTodo(todo)
                     }

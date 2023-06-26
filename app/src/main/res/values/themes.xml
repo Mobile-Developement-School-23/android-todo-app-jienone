@@ -15,6 +15,7 @@
         <item name="colorOnError">@color/LightRed</item>
         <item name="statusBarBackground">@color/light_back_primary</item>
         <item name="colorOnSurface">@color/LightDisable</item>
+        <item name="cardBackgroundColor">@color/LightBackSecondary</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/light_back_primary</item>
         <!-- Customize your theme here. -->
@@ -22,6 +23,9 @@
     </style>
     <style name="mySpinnerItemSelectedStyle" parent="@android:style/Widget.Holo.TextView.SpinnerItem">
         <item name="android:textColor">@color/LightTertiary</item>
+    </style>
+    <style name="btnDeleteColor.">
+        <item name="backgroundTint">@color/LightRed</item>
     </style>
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>

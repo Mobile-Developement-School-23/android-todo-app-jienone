@@ -15,7 +15,10 @@ import com.example.yandextodo.R
 import com.example.yandextodo.data.Model
 import com.example.yandextodo.databinding.ItemTodoBinding
 
-class TodoListAdapter(private val viewmodel: HomeViewModel) : ListAdapter<Model, TodoListAdapter.TodoViewHolder>(TODO_ITEM_COMPARATOR) {
+class TodoListAdapter(
+    private val viewmodel: HomeViewModel,
+    private val homeFragment: HomeFragment
+) : ListAdapter<Model, TodoListAdapter.TodoViewHolder>(TODO_ITEM_COMPARATOR) {
 
 
     var onItemClicked: ((Model) -> Unit)? = null
@@ -26,10 +29,11 @@ class TodoListAdapter(private val viewmodel: HomeViewModel) : ListAdapter<Model,
 
         private val binding = ItemTodoBinding.bind(view)
 
+
+        var cbCounter = 0
         private val checkBox = binding.checkboxCompleted
 
         fun bind(data: Model) {
-
             binding.textDescription.text = if (data.priority == "!!Высокий") {
                 "‼ ${data.description}"
             } else {
@@ -51,7 +55,7 @@ class TodoListAdapter(private val viewmodel: HomeViewModel) : ListAdapter<Model,
             checkBox.setOnCheckedChangeListener(null) // Remove previous listener to avoid recursion
 
             // Retrieve the checkbox state from the ViewModel
-            val isChecked = viewmodel.getCheckboxState(data.id)
+            val isChecked = viewmodel.getCheckboxState(data.id.toInt())
 
             // Update the checkbox state without triggering the listener
             checkBox.isChecked = isChecked
@@ -73,9 +77,10 @@ class TodoListAdapter(private val viewmodel: HomeViewModel) : ListAdapter<Model,
 
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 // Update the checkbox state in the ViewModel
-                viewmodel.setCheckboxState(data.id, isChecked)
+                viewmodel.setCheckboxState(data.id.toInt(), isChecked)
                 binding.textDescription.setStrikeThrough(isChecked)
                 data.flag = isChecked
+
 
                 // Change checkbox color dynamically based on priority and checkbox state
                 val newCheckboxColor = when {
@@ -106,14 +111,9 @@ class TodoListAdapter(private val viewmodel: HomeViewModel) : ListAdapter<Model,
             }
         }
 
-
-
-
-
-
-
-
     }
+
+
 
 
     companion object {
@@ -138,10 +138,11 @@ class TodoListAdapter(private val viewmodel: HomeViewModel) : ListAdapter<Model,
         holder.bind(getItem(position))
     }
 }
-fun TextView.setStrikeThrough(strikethrough: Boolean) {
-    if (strikethrough) {
-        paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-    } else {
-        paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+    fun TextView.setStrikeThrough(strikethrough: Boolean) {
+        if (strikethrough) {
+            paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        } else {
+            paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        }
     }
-}
+

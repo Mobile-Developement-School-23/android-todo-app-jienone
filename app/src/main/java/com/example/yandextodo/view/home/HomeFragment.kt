@@ -1,13 +1,11 @@
 package com.example.yandextodo.view.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toolbar
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -16,75 +14,73 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.yandextodo.R
 import com.example.yandextodo.core.di.Injection
+import com.example.yandextodo.core.utils.SwipeGesture
 import com.example.yandextodo.core.vo.LoadResult
 import com.example.yandextodo.data.Model
 import com.example.yandextodo.databinding.FragmentHomeBinding
 import kotlinx.coroutines.launch
 
+const val REQUEST_LOGIN_SDK = ""
+
 
 class HomeFragment : Fragment(), View.OnClickListener {
 
-
-
     private var _binding: FragmentHomeBinding? = null
 
-    private val binding get() = _binding
-
+    var cbCounter = 0
+    private val binding get() = _binding!!
     private val viewModel by viewModels<HomeViewModel> {
         Injection.provideViewModelFactory(requireContext())
     }
+    private lateinit var todoListAdapter: TodoListAdapter
+
+    private var tvCompleted: TextView? = null
+
 
     override fun onCreateView(
-
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+
+
+
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        return binding?.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.fabAdd?.setOnClickListener(this)
+
+        tvCompleted = binding.tvCompleted
+
+
+        var isVisible = true
+        val eye = view.findViewById<ImageView>(R.id.iv_eye)
+        eye?.setOnClickListener {
+            isVisible = !isVisible
+            if(isVisible) eye.setImageResource(R.drawable.ic_eye_visible)
+            else eye.setImageResource(R.drawable.ic_eye_invisible)
+        }
+
+        binding.fabAdd.setOnClickListener(this)
 
         viewModel.getAllTodos()
 
-        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                // Do nothing, as we don't need to handle item move
-                return false
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                // Call the deleteTodo method of your ViewModel with the position as an argument
-                viewModel.deleteTodo(position)
-            }
-        })
-
-        // Attach the ItemTouchHelper to the RecyclerView
-        itemTouchHelper.attachToRecyclerView(binding?.rvTodos)
-
-
-
-        val todoListAdapter = TodoListAdapter(viewModel)
-
+        todoListAdapter = TodoListAdapter(viewModel, this)
         todoListAdapter.onItemClicked = { todo ->
             goToDetailFragment(todo)
         }
 
-        binding?.rvTodos?.layoutManager = LinearLayoutManager(requireContext())
-        binding?.rvTodos?.adapter = todoListAdapter
+        binding.rvTodos.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvTodos.adapter = todoListAdapter
 
+        val swipeGesture = object : SwipeGesture(requireContext(), viewModel, adapter = todoListAdapter) {}
+        val itemTouchHelper = ItemTouchHelper(swipeGesture)
+        itemTouchHelper.attachToRecyclerView(binding.rvTodos)
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -121,6 +117,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
             R.id.fab_add -> goToDetailFragment()
         }
     }
+//    private fun startYandexAuth() {
+//        val loginOptionsBuilder = YandexAuthLoginOptions.Builder()
+//        val intent = sdk.createLoginIntent(loginOptionsBuilder.build())
+//    }
+
 
     private fun goToDetailFragment(todo: Model? = null) {
         val action = HomeFragmentDirections.actionHomeFragment2ToDetailFragment2()
@@ -130,27 +131,20 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun showLoadingState(state: Boolean) {
-        if (state) {
-            binding?.progressBar?.visibility = View.VISIBLE
-        } else {
-            binding?.progressBar?.visibility = View.GONE
-        }
+        binding.progressBar.visibility = if (state) View.VISIBLE else View.GONE
     }
 
     private fun showEmptyListState(state: Boolean) {
-        if (state) {
-            binding?.tvEmptyState?.visibility = View.VISIBLE
-        } else {
-            binding?.tvEmptyState?.visibility = View.GONE
-        }
+        binding.tvEmptyState.visibility = if (state) View.VISIBLE else View.GONE
     }
-
-
 
     override fun onDestroyView() {
-        _binding = null
         super.onDestroyView()
+        _binding = null
     }
 
-
+    fun updateCounter() {
+        tvCompleted!!.text = "Выполнено - $cbCounter"
+    }
 }
+

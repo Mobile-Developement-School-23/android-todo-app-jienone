@@ -12,6 +12,7 @@
     <string name="empty_et_desc">Введите текст, чтобы продолжить</string>
     <string name="update">Обновить</string>
     <string name="btn_info">INFO</string>
+    <string name="counter_text">"Выполнено - "</string>
 
     <string-array name="options">
         <item>Нет</item>

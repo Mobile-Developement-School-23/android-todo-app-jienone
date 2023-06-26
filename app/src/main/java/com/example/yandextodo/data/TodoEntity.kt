@@ -12,5 +12,6 @@ data class TodoEntity(
     val deadline: String,
     val flag: Boolean,
     val createdAt: Long,
-    val updatedAt: Long
+    val updatedAt: Long,
+    val lastUpdatedBy: String
 )
