@@ -15,25 +15,39 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.yandextodo.R
 import com.example.yandextodo.core.di.Injection
+import com.example.yandextodo.core.utils.convertDateToTimestamp
+import com.example.yandextodo.data.ItemContainer
 import com.example.yandextodo.data.Model
 import com.example.yandextodo.databinding.FragmentDetailBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.lang.Error
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import java.util.UUID
+import kotlin.math.abs
+import kotlin.random.Random
 
-class DetailFragment : Fragment(), View.OnClickListener {
+class DetailFragment() : Fragment(), View.OnClickListener {
 
     private var _binding: FragmentDetailBinding? = null
 
     private val binding get() = _binding
 
+    private val apiService = Injection.provideApiService()
+
 
     private val viewModel by viewModels<DetailViewModel> {
-        Injection.provideViewModelFactory(requireContext())
+        Injection.provideViewModelFactory(requireContext(), apiService)
     }
     private val args by navArgs<DetailFragmentArgs>()
     override fun onCreateView(
@@ -151,14 +165,18 @@ class DetailFragment : Fragment(), View.OnClickListener {
             if (position != -1) {
                 binding?.spinner?.setSelection(position)
             }
-            if (!args.todo?.deadline.isNullOrEmpty()) {
-                if (!args.todo?.deadline.isNullOrEmpty()) {
-                    if (binding?.pickedDate?.text.isNullOrBlank()) {
-                        binding?.pickedDate?.text = args.todo?.deadline
+            if (args.todo?.deadline != null) {
+                val deadline = args.todo!!.deadline
+                if (binding?.pickedDate?.text.isNullOrBlank()) {
+                    val selectedCalendar = Calendar.getInstance()
+                    if (deadline != null) {
+                        selectedCalendar.timeInMillis = deadline
                     }
-                    binding?.switchButton?.isChecked = true
+                    val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale("ru"))
+                    val formattedDate = dateFormat.format(selectedCalendar.time)
+                    binding?.pickedDate?.text = formattedDate.toString()
                 }
-
+                binding?.switchButton?.isChecked = true
             }
             viewModel.setIsOnUpdatingTodo(true)
         } else {
@@ -192,7 +210,6 @@ class DetailFragment : Fragment(), View.OnClickListener {
             }
 
             R.id.btn_back -> {
-//                activity?.onBackPressed()
                 findNavController().popBackStack()
             }
 
@@ -203,7 +220,6 @@ class DetailFragment : Fragment(), View.OnClickListener {
                 } else {
                     binding?.btnDelete?.isEnabled = true
                     args.todo?.let { viewModel.deleteTodo(it) }
-//                    activity?.onBackPressed()
                     findNavController().popBackStack()
 
                 }
@@ -211,7 +227,6 @@ class DetailFragment : Fragment(), View.OnClickListener {
 
             R.id.btn_add_or_update -> {
                 if (isUserInputValidated()) {
-
                     if (viewModel.isOnUpdatingTodo) {
                         if (isUserInputValidated()) {
                             args.todo?.let {
@@ -222,39 +237,35 @@ class DetailFragment : Fragment(), View.OnClickListener {
                                     id = it.id,
                                     description = description,
                                     priority = selectedSpinnerItem,
-                                    deadline = deadline,
+                                    deadline = convertDateToTimestamp(deadline),
                                     flag = false,
                                     createdAt = it.createdAt,
                                     updatedAt = System.currentTimeMillis(),
-                                    lastUpdatedBy = System.currentTimeMillis().toString(),
-
-                                    )
-
-                                viewModel.updateTodo(todo)
+                                    changedAt = System.currentTimeMillis(),
+                                    lastUpdatedBy = "fed182",
+                                    color = "#FFFFFF"
+                                )
+                                updateTodoItem(todo)
                             }
                         }
                     } else {
-
-
                         val description = binding?.etDescription?.text.toString()
-
                         val selectedSpinnerItem = binding?.spinner?.selectedItem.toString()
                         val deadline = binding?.pickedDate?.text.toString()
                         val todo = Model(
+                            id = generateRandomId().toString(),
                             description = description,
                             createdAt = System.currentTimeMillis(),
                             updatedAt = System.currentTimeMillis(),
+                            changedAt = System.currentTimeMillis(),
                             priority = selectedSpinnerItem,
-                            deadline = deadline,
+                            deadline = convertDateToTimestamp(deadline),
                             flag = false,
-                            lastUpdatedBy = System.currentTimeMillis().toString(),
-
+                            lastUpdatedBy = "fed182",
+                            color = "#FFFFFF"
                         )
-                        viewModel.addTodo(todo)
+                        addTodoItem(todo)
                     }
-//                    activity?.onBackPressed()
-                    findNavController().popBackStack()
-
                 } else {
                     Toast.makeText(requireContext(), R.string.empty_et_desc, Toast.LENGTH_LONG).show()
                 }
@@ -262,12 +273,39 @@ class DetailFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun addTodoItem(todo: Model) {
+        lifecycleScope.launch {
+            try {
+                viewModel.addTodo(todo)
+                Log.d("ADD_ITEM_IN_BACK", "Item added successfully")
+                findNavController().popBackStack()
+            } catch (e: Exception) {
+                Log.e("ADD_ITEM_IN_BACK", e.toString())
+            }
+        }
+    }
+
+    private fun updateTodoItem(item: Model) {
+        lifecycleScope.launch {
+            try {
+                viewModel.updateTodo(item)
+            } catch (e: Exception) {
+                Log.e("UPDATE_ITEM", "EXCEPTION is '$e TODO ITEM '${item.id}'")
+            }
+        }
+        findNavController().popBackStack()
+    }
+
+    private fun generateRandomId(): Long {
+        val random = Random(System.currentTimeMillis())
+        return abs(random.nextLong())
+    }
+
+
     private fun isUserInputValidated(): Boolean {
         val description = binding?.etDescription?.text
         return (!description.isNullOrBlank())
     }
-
-
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

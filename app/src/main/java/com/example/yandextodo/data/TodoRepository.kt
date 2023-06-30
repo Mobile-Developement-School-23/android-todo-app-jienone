@@ -1,10 +1,17 @@
 package com.example.yandextodo.data
 
+import android.content.ClipData.Item
+import android.util.Log
+import com.example.yandextodo.core.di.Injection
 import com.example.yandextodo.core.utils.DataMapper
+import com.example.yandextodo.core.utils.convertTimestampToDate
 import com.example.yandextodo.core.vo.LoadResult
+import com.example.yandextodo.data.network.ApiService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -13,6 +20,9 @@ class TodoRepository(
     private val dispatcher: CoroutineDispatcher
 ) {
 
+    private var currentRevision: Int = 0
+
+    private val apiService: ApiService = Injection.provideApiService()
     companion object {
         @Volatile
         private var instance: TodoRepository? = null
@@ -30,27 +40,78 @@ class TodoRepository(
     }
     suspend fun getAllTodos(): Flow<LoadResult<List<Model>>> {
         return withContext(dispatcher) {
-            return@withContext todoLocalDataSource.getAllTodos().map {
-                LoadResult.Success(DataMapper.mapTodoEntitiesToDomain(it))
+            try {
+                val response = apiService.getAllTodos()
+                val remoteTodos = response.list
+
+                currentRevision = response.revision
+                try {
+                    val todoEntities = mutableListOf<TodoEntity>()
+                    for (remoteTodo in remoteTodos) {
+                        try {
+
+                            val todoEntity = DataMapper.mapTodoDomainToEntity(remoteTodo)
+                            todoEntity.deadline = convertTimestampToDate(remoteTodo.deadline)
+                            todoEntities.add(todoEntity)
+                            todoLocalDataSource.addAllTodos(todoEntities)
+                        } catch (e: NumberFormatException) {
+                            Log.e("INVALID_ID", "Skipping element with invalid ID: ${remoteTodo.id}")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("HZ_WHY_NOT_ADDED", e.toString())
+                }
+            } catch (e: Exception) {
+                Log.e("NOT_RECEIVED", "Something went wrong while receiving")
+                Log.e("NOT_RECEIVED", e.toString())
+            }
+
+            flow {
+                val localTodos = todoLocalDataSource.getAllTodos().first()
+                println("LOCAL_TODOS $localTodos")
+                val mappedTodos = DataMapper.mapTodoEntitiesToDomain(localTodos)
+                println("MAPPED_TODOS $mappedTodos")
+                emit(LoadResult.Success(mappedTodos))
             }
         }
     }
 
 
-    suspend fun addTodo(todo: Model) {
+
+
+
+    suspend fun addTodo(item: Model) {
         withContext(dispatcher) {
-            todoLocalDataSource.addTodoToDatabase(DataMapper.mapTodoDomainToEntity(todo))
+            val response = apiService.addItem(currentRevision, ItemContainer(item))
+            if (response.isSuccessful) {
+                todoLocalDataSource.addTodoToDatabase(DataMapper.mapTodoDomainToEntity(item))
+            } else {
+                // Handle the error response
+                Log.d("HTTP_RESPONSE", response.code().toString())
+                // Perform error handling logic here
+            }
         }
     }
 
-    suspend fun updateTodo(todo: Model) {
+
+    suspend fun updateTodo(item: Model) {
         withContext(dispatcher) {
-            todoLocalDataSource.updateTodo(DataMapper.mapTodoDomainToEntity(todo))
+            val response = apiService.updateItem(item.id, item)
+            Log.d("RESPONSE_UPDATE", response.toString())
+
+//            if (response.isSuccessful) {
+                todoLocalDataSource.updateTodo(DataMapper.mapTodoDomainToEntity(item))
+//            } else {
+                // Handle the error response
+//                Log.d("HTTP_RESPONSE", response.code().toString())
+                // Perform error handling logic here
+//            }
         }
     }
 
     suspend fun deleteTodo(todo: Model) {
         withContext(dispatcher) {
+            apiService.deleteItem(todo.id, todo)
             todoLocalDataSource.deleteTodoFromDatabase(DataMapper.mapTodoDomainToEntity(todo))
         }
     }
@@ -70,6 +131,4 @@ class TodoRepository(
             return@withContext todoLocalDataSource.countElementsWithProperty()
         }
     }
-
-
 }

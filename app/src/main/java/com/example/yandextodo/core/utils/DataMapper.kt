@@ -15,13 +15,15 @@ object DataMapper {
         return list.map {
             Model(
                 id = it.id.toString(),
-                deadline = it.deadline,
+                deadline = convertDateToTimestamp(it.deadline),
                 description = it.description,
                 lastUpdatedBy = it.lastUpdatedBy,
                 flag = it.flag,
                 createdAt = it.createdAt,
+                changedAt = it.changedAt,
                 updatedAt = it.updatedAt,
-                priority = it.priority
+                priority = it.priority,
+                color = it.color
             )
         }
     }
@@ -29,14 +31,16 @@ object DataMapper {
 
     fun mapTodoDomainToEntity(todo: Model): TodoEntity {
         return TodoEntity(
-            id = todo.id.toInt(),
+            id = todo.id.toLong(),
             description = todo.description,
             createdAt = todo.createdAt,
+            changedAt = todo.changedAt,
             updatedAt = todo.updatedAt,
-            deadline = todo.deadline,
+            deadline = convertTimestampToDate(todo.deadline),
             priority = todo.priority,
             flag = todo.flag,
-            lastUpdatedBy = todo.lastUpdatedBy
+            lastUpdatedBy = todo.lastUpdatedBy,
+            color = todo.color
         )
     }
 

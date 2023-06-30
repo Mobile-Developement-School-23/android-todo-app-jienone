@@ -22,6 +22,7 @@ import com.example.yandextodo.data.Model
 import com.example.yandextodo.data.TodoDatabase
 import com.example.yandextodo.data.TodoLocalDataSource
 import com.example.yandextodo.data.TodoRepository
+import com.example.yandextodo.data.network.Instance
 import com.example.yandextodo.databinding.FragmentHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,7 +38,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private val binding get() = _binding!!
     private val viewModel by viewModels<HomeViewModel> {
-        Injection.provideViewModelFactory(requireContext())
+        Injection.provideViewModelFactory(requireContext(), Injection.provideApiService())
     }
     private lateinit var todoListAdapter: TodoListAdapter
 

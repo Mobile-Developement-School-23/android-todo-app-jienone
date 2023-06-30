@@ -32,7 +32,6 @@ class HomeViewModel(private val repository: TodoRepository) : ViewModel() {
         }
     }
 
-
 //    fun setCheckboxState(itemId: Int, isChecked: Boolean) {
 //        checkboxStates[itemId] = isChecked
 //        getAllTodos()

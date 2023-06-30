@@ -29,6 +29,13 @@ class TodoLocalDataSource(
         }
     }
 
+    suspend fun addAllTodos(todos: List<TodoEntity>) {
+        return withContext(dispatcher) {
+            todoDao.deleteAllTodos()
+            todoDao.addAllTodos(todos)
+        }
+    }
+
     suspend fun addTodoToDatabase(todoEntity: TodoEntity) {
         withContext(dispatcher) {
             todoDao.addTodo(todoEntity)

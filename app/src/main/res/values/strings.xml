@@ -13,9 +13,9 @@
     <string name="update">Обновить</string>
     <string name="btn_info">INFO</string>
     <string name="counter_text">"Выполнено - %d"</string>
-    <string name="low">"Нет"</string>
-    <string name="basic">"Низкий"</string>
-    <string name="important">"!!Важный "</string>
+    <string name="low">"low"</string>
+    <string name="basic">"basic"</string>
+    <string name="important">"important"</string>
 
     <string-array name="options">
         <item>@string/low</item>

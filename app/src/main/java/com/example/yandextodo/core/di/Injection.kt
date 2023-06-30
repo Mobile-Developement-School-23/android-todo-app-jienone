@@ -5,6 +5,8 @@ import com.example.yandextodo.core.ui.ViewModelFactory
 import com.example.yandextodo.data.TodoDatabase
 import com.example.yandextodo.data.TodoLocalDataSource
 import com.example.yandextodo.data.TodoRepository
+import com.example.yandextodo.data.network.ApiService
+import com.example.yandextodo.data.network.Instance
 
 import kotlinx.coroutines.Dispatchers
 
@@ -15,6 +17,8 @@ object Injection {
 
     private fun provideIODispatcher() = Dispatchers.IO
 
+    fun provideApiService() = Instance.api
+
     private fun provideLocalDatabase(context: Context) = TodoDatabase.getInstance(context)
 
     private fun provideTodoLocalDataSource(context: Context) =
@@ -23,17 +27,20 @@ object Injection {
             provideIODispatcher()
         )
 
-    private fun provideTodoRepository(context: Context) =
+    private fun provideTodoRepository(context: Context, apiService: ApiService) =
         TodoRepository.getInstance(
             provideTodoLocalDataSource(
                 context
             ), provideIODispatcher()
         )
-
-    fun provideViewModelFactory(context: Context) =
+    fun provideViewModelFactory(context: Context, apiService: ApiService) =
         ViewModelFactory.getInstance(
             provideTodoRepository(
-                context
+                context,
+                apiService
             )
         )
+
+
+
 }

@@ -38,7 +38,7 @@ class TodoListAdapter(
             binding.priority.setTextColor(ContextCompat.getColor(itemView.context, if (data.priority == "!!Высокий") R.color.DarkRed else R.color.LightSeparator))
 
             binding.textDescription.text = data.description
-            binding.textDate.text = data.deadline
+            binding.textDate.text = data.deadline.toString()
             checkBox.setOnCheckedChangeListener(null) // Remove previous listener to avoid recursion
 
             // Retrieve the checkbox state from the ViewModel
