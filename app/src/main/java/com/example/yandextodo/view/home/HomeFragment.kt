@@ -22,12 +22,11 @@ import com.example.yandextodo.data.Model
 import com.example.yandextodo.data.TodoDatabase
 import com.example.yandextodo.data.TodoLocalDataSource
 import com.example.yandextodo.data.TodoRepository
-import com.example.yandextodo.data.network.Instance
 import com.example.yandextodo.databinding.FragmentHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-const val REQUEST_LOGIN_SDK = ""
+//const val REQUEST_LOGIN_SDK = ""
 
 
 class HomeFragment : Fragment(), View.OnClickListener {
@@ -49,8 +48,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -117,6 +114,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
                             showEmptyListState(true)
                             showLoadingState(false)
                         }
+
+                        else -> {}
                     }
                     lifecycleScope.launch {
                         val count = todoRepository.countElementsWithProperty()

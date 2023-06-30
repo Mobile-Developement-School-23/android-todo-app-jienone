@@ -50,8 +50,8 @@ class TodoListAdapter(
             // Change checkbox color based on priority and checkbox state
             val priority = data.priority
             val checkboxColor = when {
-                isChecked && priority == "!!Высокий" -> ContextCompat.getColor(itemView.context, R.color.DarkGreen)
-                priority == "!!Высокий" -> ContextCompat.getColor(itemView.context, R.color.DarkRed)
+                isChecked && priority == R.string.important.toString() -> ContextCompat.getColor(itemView.context, R.color.DarkGreen)
+                priority == R.string.important.toString() -> ContextCompat.getColor(itemView.context, R.color.DarkRed)
                 else -> {
                     if (isChecked) {
                         ContextCompat.getColor(itemView.context, R.color.DarkGreen)
@@ -63,7 +63,6 @@ class TodoListAdapter(
             checkBox.buttonTintList = ColorStateList.valueOf(checkboxColor)
 
             checkBox.setOnCheckedChangeListener { _, flag ->
-                // Update the checkbox state in the ViewModel
                 if (data.flag) {
                     viewModel.offCheckboxState(position)
                     binding.textDescription.setStrikeThrough(flag)
@@ -75,11 +74,9 @@ class TodoListAdapter(
                 notifyItemChanged(data.id.toInt())
 
 
-
-                // Change checkbox color dynamically based on priority and checkbox state
                 val newCheckboxColor = when {
-                    flag && priority == "!!Высокий" -> ContextCompat.getColor(itemView.context, R.color.DarkGreen)
-                    priority == "!!Высокий" -> ContextCompat.getColor(itemView.context, R.color.DarkRed)
+                    flag && priority ==  R.string.important.toString() -> ContextCompat.getColor(itemView.context, R.color.DarkGreen)
+                    priority ==  R.string.important.toString() -> ContextCompat.getColor(itemView.context, R.color.DarkRed)
                     else -> {
                         if (flag) {
                             ContextCompat.getColor(itemView.context, R.color.DarkGreen)
@@ -90,15 +87,12 @@ class TodoListAdapter(
                 }
                 checkBox.buttonTintList = ColorStateList.valueOf(newCheckboxColor)
             }
-
-            // Set the strike-through based on the checkbox state
             binding.textDescription.setStrikeThrough(isChecked)
 
             binding.root.setOnClickListener {
                 onItemClicked?.invoke(data)
 
-                // Change checkbox color when item is clicked and priority is "!!Высокий"
-                if (priority == "!!Высокий") {
+                if (priority == R.string.important.toString()) {
                     val newCheckboxColor = ContextCompat.getColor(itemView.context, R.color.DarkGreen)
                     checkBox.buttonTintList = ColorStateList.valueOf(newCheckboxColor)
                 }
@@ -106,10 +100,6 @@ class TodoListAdapter(
         }
 
     }
-
-
-
-
     companion object {
         private val TODO_ITEM_COMPARATOR = object : DiffUtil.ItemCallback<Model>() {
             override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {

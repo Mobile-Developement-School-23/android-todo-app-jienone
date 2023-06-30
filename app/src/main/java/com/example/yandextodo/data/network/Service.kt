@@ -1,5 +1,6 @@
 package com.example.yandextodo.data.network
 
+import android.content.ClipData.Item
 import com.example.yandextodo.data.ItemContainer
 import com.example.yandextodo.data.ListResponse
 import com.example.yandextodo.data.Model
@@ -25,8 +26,8 @@ interface ApiService {
     suspend fun addItem(@Header("X-Last-Known-Revision") revision: Int, @Body item: ItemContainer) : Response<ItemContainer>
 
     @PUT("list/{id}")
-    suspend fun updateItem(@Path("id") id: String, @Body item: Model): ListResponse
+    suspend fun updateItem(@Header("X-Last-Known-Revision") revision: Int, @Path("id") id: String, @Body item: ItemContainer): Response<ItemContainer>
 
     @POST("list/{id}")
-    suspend fun deleteItem(@Path("id") id: String, @Body item: Model): Model
+    suspend fun deleteItem(@Path("id") id: String): String
 }

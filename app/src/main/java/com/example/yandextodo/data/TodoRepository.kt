@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class TodoRepository(
@@ -96,23 +95,15 @@ class TodoRepository(
 
     suspend fun updateTodo(item: Model) {
         withContext(dispatcher) {
-            val response = apiService.updateItem(item.id, item)
+            val response = apiService.updateItem(currentRevision, item.id, ItemContainer(item))
             Log.d("RESPONSE_UPDATE", response.toString())
-
-//            if (response.isSuccessful) {
-                todoLocalDataSource.updateTodo(DataMapper.mapTodoDomainToEntity(item))
-//            } else {
-                // Handle the error response
-//                Log.d("HTTP_RESPONSE", response.code().toString())
-                // Perform error handling logic here
-//            }
+            todoLocalDataSource.updateTodo(DataMapper.mapTodoDomainToEntity(item))
         }
     }
 
-    suspend fun deleteTodo(todo: Model) {
+    suspend fun deleteTodo(todo: String) {
         withContext(dispatcher) {
-            apiService.deleteItem(todo.id, todo)
-            todoLocalDataSource.deleteTodoFromDatabase(DataMapper.mapTodoDomainToEntity(todo))
+            apiService.deleteItem(todo)
         }
     }
 

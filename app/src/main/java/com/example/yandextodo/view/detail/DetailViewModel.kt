@@ -26,7 +26,7 @@ class DetailViewModel(private val repository: TodoRepository) : ViewModel() {
         repository.updateTodo(todo)
     }
 
-    fun deleteTodo(todo: Model) = viewModelScope.launch {
+    fun deleteTodo(todo: String) = viewModelScope.launch {
         repository.deleteTodo(todo)
     }
     private var _isOnUpdatingTodo = false

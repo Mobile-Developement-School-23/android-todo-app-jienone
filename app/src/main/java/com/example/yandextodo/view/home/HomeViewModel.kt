@@ -46,7 +46,7 @@ class HomeViewModel(private val repository: TodoRepository) : ViewModel() {
             val todoList = todos.data
             if (todoList?.indices?.contains(position) == true) {
                 val todo = todoList.getOrNull(position)
-                todo?.let { repository.deleteTodo(it) }
+                todo?.let { repository.deleteTodo(it.id) }
             }
         }
         getAllTodos()

@@ -219,7 +219,8 @@ class DetailFragment() : Fragment(), View.OnClickListener {
                     binding?.btnDelete?.isEnabled = false
                 } else {
                     binding?.btnDelete?.isEnabled = true
-                    args.todo?.let { viewModel.deleteTodo(it) }
+                    args.todo?.let { viewModel.deleteTodo(it.id)
+                    }
                     findNavController().popBackStack()
 
                 }
