@@ -31,30 +31,14 @@ class HomeViewModel(private val repository: TodoRepository) : ViewModel() {
             _todos.value = LoadResult.Error(message = e.message.toString())
         }
     }
-
-//    fun setCheckboxState(itemId: Int, isChecked: Boolean) {
-//        checkboxStates[itemId] = isChecked
-//        getAllTodos()
-//    }
-    fun getCheckboxState(itemId: Int): Boolean {
-        getAllTodos()
-        return checkboxStates[itemId] ?: false
-    }
-    fun deleteTodo(position: Int) = viewModelScope.launch {
-        val todos = _todos.value
-        if (todos is LoadResult.Success) {
-            val todoList = todos.data
-            if (todoList?.indices?.contains(position) == true) {
-                val todo = todoList.getOrNull(position)
-                todo?.let { repository.deleteTodo(it.id) }
-            }
-        }
-        getAllTodos()
+    fun deleteTodo(item: Model) = viewModelScope.launch {
+        repository.deleteTodo(item)
     }
     fun setCheckboxState(position: Int) = viewModelScope.launch {
         val todos = _todos.value
         if (todos is LoadResult.Success) {
-            val todoList = todos.data
+
+            val todoList = todos.data;
             if (todoList?.indices?.contains(position) == true) {
                 val todo = todoList.getOrNull(position)
                 todo?.flag = true

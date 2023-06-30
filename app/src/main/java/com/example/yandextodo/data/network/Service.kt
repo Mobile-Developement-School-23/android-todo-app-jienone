@@ -6,6 +6,7 @@ import com.example.yandextodo.data.ListResponse
 import com.example.yandextodo.data.Model
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
@@ -28,6 +29,6 @@ interface ApiService {
     @PUT("list/{id}")
     suspend fun updateItem(@Header("X-Last-Known-Revision") revision: Int, @Path("id") id: String, @Body item: ItemContainer): Response<ItemContainer>
 
-    @POST("list/{id}")
-    suspend fun deleteItem(@Path("id") id: String): String
+    @DELETE("list/{id}")
+    suspend fun deleteItem(@Header("X-Last-Known-Revision") revision: Int, @Path("id") id: String): Response<ItemContainer>
 }

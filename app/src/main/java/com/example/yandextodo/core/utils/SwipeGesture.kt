@@ -38,25 +38,25 @@ abstract class SwipeGesture(
         when (direction) {
             ItemTouchHelper.LEFT -> {
                 item?.let {
-                    viewModel.deleteTodo(position = position)
+                    viewModel.deleteTodo(it)
                 }
             }
 
             ItemTouchHelper.RIGHT -> {
                 item?.let { todo ->
-                    if (todo.flag) {
-                        runBlocking { viewModel.offCheckboxState(position) }
+                    runBlocking {
+                        if (todo.flag) {
+                            viewModel.offCheckboxState(position)
+                        } else {
+                            viewModel.setCheckboxState(position)
+                        }
                     }
-                    else {
-                        runBlocking{ viewModel.setCheckboxState(position) }
-                    }
-                    adapter.notifyItemChanged(position)
-
                 }
             }
         }
-    }
 
+        adapter.notifyItemChanged(position)
+    }
     override fun onChildDraw(
         c: Canvas,
         recyclerView: RecyclerView,

@@ -20,13 +20,11 @@ class DetailViewModel(private val repository: TodoRepository) : ViewModel() {
             Log.e("ADD_TODO_EXCEPTION", e.toString())
         }
     }
-
-
     fun updateTodo(todo: Model) = viewModelScope.launch {
         repository.updateTodo(todo)
     }
 
-    fun deleteTodo(todo: String) = viewModelScope.launch {
+    fun deleteTodo(todo: Model) = viewModelScope.launch {
         repository.deleteTodo(todo)
     }
     private var _isOnUpdatingTodo = false

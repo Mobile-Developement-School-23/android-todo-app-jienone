@@ -26,9 +26,6 @@ import com.example.yandextodo.databinding.FragmentHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-//const val REQUEST_LOGIN_SDK = ""
-
-
 class HomeFragment : Fragment(), View.OnClickListener {
 
     private lateinit var todoRepository: TodoRepository
@@ -37,7 +34,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private val binding get() = _binding!!
     private val viewModel by viewModels<HomeViewModel> {
-        Injection.provideViewModelFactory(requireContext(), Injection.provideApiService())
+        Injection.provideViewModelFactory(requireContext())
     }
     private lateinit var todoListAdapter: TodoListAdapter
 
@@ -49,7 +46,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -63,6 +59,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
             ),
             Dispatchers.IO
         )
+
 
         tvCompleted = binding.tvCompleted
 
@@ -114,8 +111,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
                             showEmptyListState(true)
                             showLoadingState(false)
                         }
-
-                        else -> {}
                     }
                     lifecycleScope.launch {
                         val count = todoRepository.countElementsWithProperty()

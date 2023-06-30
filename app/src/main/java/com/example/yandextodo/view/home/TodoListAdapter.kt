@@ -64,14 +64,12 @@ class TodoListAdapter(
 
             checkBox.setOnCheckedChangeListener { _, flag ->
                 if (data.flag) {
-                    viewModel.offCheckboxState(position)
+                    viewModel.offCheckboxState(layoutPosition)
+                    binding.textDescription.setStrikeThrough(flag)
+                } else {
+                    viewModel.setCheckboxState(layoutPosition)
                     binding.textDescription.setStrikeThrough(flag)
                 }
-                else {
-                    viewModel.setCheckboxState(position)
-                    binding.textDescription.setStrikeThrough(flag)
-                }
-                notifyItemChanged(data.id.toInt())
 
 
                 val newCheckboxColor = when {

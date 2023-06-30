@@ -101,20 +101,23 @@ class TodoRepository(
         }
     }
 
-    suspend fun deleteTodo(todo: String) {
+    suspend fun deleteTodo(todo: Model) {
         withContext(dispatcher) {
-            apiService.deleteItem(todo)
+            apiService.deleteItem(currentRevision, todo.id)
+            todoLocalDataSource.deleteTodoFromDatabase(DataMapper.mapTodoDomainToEntity(todo))
         }
     }
 
     suspend fun markAsDone(todo: Model) {
         withContext(dispatcher) {
             todoLocalDataSource.markAsDone(DataMapper.mapTodoDomainToEntity(todo))
+            apiService.updateItem(currentRevision, todo.id, ItemContainer(todo))
         }
     }
     suspend fun markAsNotDone(todo: Model) {
         withContext(dispatcher) {
             todoLocalDataSource.markAsNotDone(DataMapper.mapTodoDomainToEntity(todo))
+            apiService.updateItem(currentRevision, todo.id, ItemContainer(todo))
         }
     }
     suspend fun countElementsWithProperty(): Int {

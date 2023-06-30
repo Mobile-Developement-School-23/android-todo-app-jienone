@@ -43,11 +43,8 @@ class DetailFragment() : Fragment(), View.OnClickListener {
 
     private val binding get() = _binding
 
-    private val apiService = Injection.provideApiService()
-
-
     private val viewModel by viewModels<DetailViewModel> {
-        Injection.provideViewModelFactory(requireContext(), apiService)
+        Injection.provideViewModelFactory(requireContext())
     }
     private val args by navArgs<DetailFragmentArgs>()
     override fun onCreateView(
@@ -219,7 +216,7 @@ class DetailFragment() : Fragment(), View.OnClickListener {
                     binding?.btnDelete?.isEnabled = false
                 } else {
                     binding?.btnDelete?.isEnabled = true
-                    args.todo?.let { viewModel.deleteTodo(it.id)
+                    args.todo?.let { viewModel.deleteTodo(it)
                     }
                     findNavController().popBackStack()
 
