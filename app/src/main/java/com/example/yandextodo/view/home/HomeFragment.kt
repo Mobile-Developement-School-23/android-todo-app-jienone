@@ -14,6 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.yandextodo.R
 import com.example.yandextodo.core.di.Injection
 import com.example.yandextodo.core.utils.SwipeGesture
@@ -93,7 +94,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     when (loadResult) {
                         is LoadResult.Success -> {
                             showLoadingState(false)
-
+                            
                             todoListAdapter.submitList(loadResult.data)
 
                             if (loadResult.data.isNullOrEmpty()) {
@@ -101,6 +102,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                             } else {
                                 showEmptyListState(false)
                             }
+                            updateCounter()
                         }
 
                         is LoadResult.Loading -> {
@@ -112,16 +114,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
                             showLoadingState(false)
                         }
                     }
-                    lifecycleScope.launch {
-                        val count = todoRepository.countElementsWithProperty()
-                        tvCompleted!!.text = getString(R.string.counter_text, count)
-
-                    }
-
                 }
-
             }
         }
+    }
+    private suspend fun updateCounter() {
+        val count = viewModel.countElementsWithProperty()
+        tvCompleted!!.text = getString(R.string.counter_text, count)
     }
 
     override fun onClick(v: View?) {

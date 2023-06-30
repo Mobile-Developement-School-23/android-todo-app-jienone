@@ -21,7 +21,9 @@ class HomeViewModel(private val repository: TodoRepository) : ViewModel() {
     private val checkboxStates: MutableMap<Int, Boolean> = mutableMapOf()
 
 
-
+    suspend fun countElementsWithProperty(): Int {
+        return repository.countElementsWithProperty()
+    }
     fun getAllTodos() = viewModelScope.launch {
         try {
             repository.getAllTodos().collect { list ->
