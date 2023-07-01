@@ -1,6 +1,8 @@
 package com.example.yandextodo.view.home
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,10 +26,17 @@ import com.example.yandextodo.data.TodoDatabase
 import com.example.yandextodo.data.TodoLocalDataSource
 import com.example.yandextodo.data.TodoRepository
 import com.example.yandextodo.databinding.FragmentHomeBinding
+import com.yandex.authsdk.YandexAuthException
+import com.yandex.authsdk.YandexAuthLoginOptions
+import com.yandex.authsdk.YandexAuthOptions
+import com.yandex.authsdk.YandexAuthSdk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(), View.OnClickListener {
+
+    private val REQUEST_LOGIN_SDK = 182
+
 
     private lateinit var todoRepository: TodoRepository
 
@@ -41,14 +50,16 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private var tvCompleted: TextView? = null
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -94,7 +105,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     when (loadResult) {
                         is LoadResult.Success -> {
                             showLoadingState(false)
-                            
+
                             todoListAdapter.submitList(loadResult.data)
 
                             if (loadResult.data.isNullOrEmpty()) {

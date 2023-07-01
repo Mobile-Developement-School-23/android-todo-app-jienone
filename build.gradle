@@ -18,7 +18,7 @@ buildscript {
         coroutineVersion= "1.6.4"
         lifecycleVersion = "2.6.1"
         navVersion = '2.6.0'
-        roomVersion = "2.5.1"
+        roomVersion = "2.5.2"
 
     }
     repositories {

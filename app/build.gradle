@@ -18,6 +18,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        //yandex auth
+        manifestPlaceholders = [YANDEX_CLIENT_ID:"25b1884c62b34fba8f8fa00142f3cd3b"]
     }
 
     buildTypes {
@@ -72,6 +75,8 @@ dependencies {
     // okhttp interceptor
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
 
+    //yandex auth
+    implementation "com.yandex.android:authsdk:2.5.1"
 
 
 }

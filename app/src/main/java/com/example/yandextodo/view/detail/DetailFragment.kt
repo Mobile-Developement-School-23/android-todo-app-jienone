@@ -21,23 +21,16 @@ import androidx.navigation.fragment.navArgs
 import com.example.yandextodo.R
 import com.example.yandextodo.core.di.Injection
 import com.example.yandextodo.core.utils.convertDateToTimestamp
-import com.example.yandextodo.data.ItemContainer
 import com.example.yandextodo.data.Model
 import com.example.yandextodo.databinding.FragmentDetailBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.lang.Error
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
-import java.util.UUID
 import kotlin.math.abs
 import kotlin.random.Random
 
-class DetailFragment() : Fragment(), View.OnClickListener {
+class DetailFragment : Fragment(), View.OnClickListener {
 
     private var _binding: FragmentDetailBinding? = null
 
@@ -88,7 +81,7 @@ class DetailFragment() : Fragment(), View.OnClickListener {
                     selectedCalendar.set(selectedYear, selectedMonth, selectedDay)
                     val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale("ru"))
                     val formattedDate = dateFormat.format(selectedCalendar.time)
-                    Log.d("FORMDATE", formattedDate)
+                    Log.d("FORMATTED_DATE", formattedDate)
                     binding?.pickedDate?.text = formattedDate.toString()
 
                 }, year, month, day)
