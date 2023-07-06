@@ -22,6 +22,7 @@ import com.example.yandextodo.R
 import com.example.yandextodo.core.di.Injection
 import com.example.yandextodo.core.utils.convertDateToTimestamp
 import com.example.yandextodo.data.Model
+import com.example.yandextodo.data.Priority
 import com.example.yandextodo.databinding.FragmentDetailBinding
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -147,10 +148,12 @@ class DetailFragment : Fragment(), View.OnClickListener {
         if (args.todo != null) {
             binding?.etDescription?.setText(args.todo?.description)
             //15.06
+
+
             val options = resources.getStringArray(R.array.options)
 
             val selectedOption = args.todo?.priority
-            val position = options.indexOf(selectedOption)
+            val position = options.indexOf(selectedOption.toString())
 
             if (position != -1) {
                 binding?.spinner?.setSelection(position)
@@ -221,12 +224,15 @@ class DetailFragment : Fragment(), View.OnClickListener {
                         if (isUserInputValidated()) {
                             args.todo?.let {
                                 val description = binding?.etDescription?.text.toString()
-                                val selectedSpinnerItem = binding?.spinner?.selectedItem.toString()
+                                val spinnerItem = binding?.spinner?.selectedItem.toString()
                                 val deadline = binding?.pickedDate?.text.toString()
+
+
+
                                 val todo = Model(
                                     id = it.id,
                                     description = description,
-                                    priority = selectedSpinnerItem,
+                                    priority = selectedSpinnerItem(spinnerItem),
                                     deadline = convertDateToTimestamp(deadline),
                                     flag = false,
                                     createdAt = it.createdAt,
@@ -240,7 +246,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
                         }
                     } else {
                         val description = binding?.etDescription?.text.toString()
-                        val selectedSpinnerItem = binding?.spinner?.selectedItem.toString()
+                        val spinnerItem = binding?.spinner?.selectedItem.toString()
                         val deadline = binding?.pickedDate?.text.toString()
                         val todo = Model(
                             id = generateRandomId().toString(),
@@ -248,7 +254,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
                             createdAt = System.currentTimeMillis(),
                             updatedAt = System.currentTimeMillis(),
                             changedAt = System.currentTimeMillis(),
-                            priority = selectedSpinnerItem,
+                            priority = selectedSpinnerItem(spinnerItem),
                             deadline = convertDateToTimestamp(deadline),
                             flag = false,
                             lastUpdatedBy = "fed182",
@@ -296,6 +302,15 @@ class DetailFragment : Fragment(), View.OnClickListener {
         val description = binding?.etDescription?.text
         return (!description.isNullOrBlank())
     }
+    private fun selectedSpinnerItem(choosedPrio: String): Priority {
+        return when (choosedPrio) {
+            "low" -> Priority.LOW
+            "basic" -> Priority.BASIC
+            "important" -> Priority.IMPORTANT
+            else -> Priority.BASIC
+        }
+    }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
