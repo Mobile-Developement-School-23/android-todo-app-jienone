@@ -14,6 +14,9 @@ import com.example.yandextodo.R
 import com.example.yandextodo.data.Model
 import com.example.yandextodo.data.Priority
 import com.example.yandextodo.databinding.ItemTodoBinding
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class TodoListAdapter(
     private val viewModel: HomeViewModel,
@@ -31,20 +34,22 @@ class TodoListAdapter(
             } else {
                 data.description
             }
-            binding.priority.text = if (data.priority == Priority.IMPORTANT) {
-                "‼"
-            } else if(data.priority == Priority.LOW){
-                "↓"
-            } else ""
+            binding.priority.text = when (data.priority) {
+                Priority.IMPORTANT -> {
+                    "‼"
+                }
+                Priority.LOW -> {
+                    "↓"
+                }
+                else -> ""
+            }
             binding.priority.setTextColor(ContextCompat.getColor(itemView.context, if (data.priority == Priority.IMPORTANT) R.color.DarkRed else R.color.LightSeparator))
 
             binding.textDescription.text = data.description
-            binding.textDate.text = data.deadline.toString()
-            checkBox.setOnCheckedChangeListener(null) // Remove previous listener to avoid recursion
-            // Retrieve the checkbox state from the ViewModel
+            binding.textDate.text = data.deadline?.let { convertTimestampToDate(it) }
+            checkBox.setOnCheckedChangeListener(null)
             val isChecked = data.flag
 
-            // Update the checkbox state without triggering the listener
             checkBox.isChecked = isChecked
 
             // Change checkbox color based on priority and checkbox state
@@ -132,5 +137,9 @@ class TodoListAdapter(
             paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
         }
     }
+fun convertTimestampToDate(timestamp: Long): String {
+    val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+    return dateFormat.format(Date(timestamp))
+}
 
 

@@ -1,8 +1,6 @@
 package com.example.yandextodo.view.home
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +14,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.yandextodo.R
 import com.example.yandextodo.core.di.Injection
 import com.example.yandextodo.core.utils.SwipeGesture
@@ -26,16 +23,10 @@ import com.example.yandextodo.data.TodoDatabase
 import com.example.yandextodo.data.TodoLocalDataSource
 import com.example.yandextodo.data.TodoRepository
 import com.example.yandextodo.databinding.FragmentHomeBinding
-import com.yandex.authsdk.YandexAuthException
-import com.yandex.authsdk.YandexAuthLoginOptions
-import com.yandex.authsdk.YandexAuthOptions
-import com.yandex.authsdk.YandexAuthSdk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(), View.OnClickListener {
-
-    private val REQUEST_LOGIN_SDK = 182
 
 
     private lateinit var todoRepository: TodoRepository

@@ -29,11 +29,12 @@ class MainActivity : AppCompatActivity() {
                 try {
                     val yandexAuthToken = sdk.extractToken(resultCode, data)
                     if (yandexAuthToken != null) {
-                        Log.e("AUTH_TEST", "success")
+                        Log.d("AUTH_TEST", "success")
                         setContentView(R.layout.activity_main)
                     }
                 } catch (e: YandexAuthException) {
                     Log.e("AUTH_TEST", e.toString())
+                    setContentView(R.layout.activity_main)
                 }
             }
         }

@@ -21,8 +21,8 @@ import androidx.navigation.fragment.navArgs
 import com.example.yandextodo.R
 import com.example.yandextodo.core.di.Injection
 import com.example.yandextodo.core.utils.convertDateToTimestamp
+import com.example.yandextodo.core.utils.selectedSpinnerItem
 import com.example.yandextodo.data.Model
-import com.example.yandextodo.data.Priority
 import com.example.yandextodo.databinding.FragmentDetailBinding
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -40,6 +40,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
     private val viewModel by viewModels<DetailViewModel> {
         Injection.provideViewModelFactory(requireContext())
     }
+
     private val args by navArgs<DetailFragmentArgs>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,66 +91,33 @@ class DetailFragment : Fragment(), View.OnClickListener {
             datePickerDialog.show()
         }
     }
-
-
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_trash)
-        val btnDelete = binding?.btnDelete
-        val btnBack = binding?.btnBack
-        val btnAddOrUpdate = binding?.btnAddOrUpdate
-        val etDescription = binding?.etDescription
+        initViews()
+        setListeners()
+        populateData()
+    }
+    private fun setListeners() {
+        val switchButton = binding?.switchButton
+        switchButton?.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                showDatePickerDialog()
+            }
+        }
 
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isDarkTheme = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val btnBack = binding?.btnBack
+        val btnDelete = binding?.btnDelete
+        val btnAddOrUpdate = binding?.btnAddOrUpdate
 
         btnBack?.setOnClickListener(this)
-        btnAddOrUpdate?.setOnClickListener(this)
         btnDelete?.setOnClickListener(this)
-
-        val tintDisable = if (isDarkTheme) R.color.DarkDisable else R.color.LightDisable
-
-        drawable?.mutate()?.setTint(ContextCompat.getColor(requireContext(), tintDisable))
-        btnDelete?.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
-
-
-
-        populateData()
-        initViews()
-
-        etDescription?.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Не требуется
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val isInputValidated = isUserInputValidated()
-                val tintResId = if (isDarkTheme) {
-                    if (isInputValidated) R.color.DarkRed else R.color.DarkDisable
-                } else {
-                    if (isInputValidated) R.color.LightRed else R.color.LightDisable
-                }
-                btnDelete?.isEnabled = isInputValidated
-                drawable?.mutate()?.setTint(ContextCompat.getColor(requireContext(), tintResId))
-                btnDelete?.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
-                btnDelete?.setTextColor(ContextCompat.getColor(requireContext(), tintResId))
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                // Не требуется
-            }
-        })
+        btnAddOrUpdate?.setOnClickListener(this)
     }
 
     private fun populateData() {
         if (args.todo != null) {
             binding?.etDescription?.setText(args.todo?.description)
-            //15.06
-
-
             val options = resources.getStringArray(R.array.options)
 
             val selectedOption = args.todo?.priority
@@ -190,9 +158,6 @@ class DetailFragment : Fragment(), View.OnClickListener {
             binding?.btnAddOrUpdate?.text = getString(R.string.update)
         }
     }
-
-
-
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.switchButton -> {
@@ -201,12 +166,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
                     showDatePickerDialog()
                 }
             }
-
-            R.id.btn_back -> {
-                findNavController().popBackStack()
-            }
-
-
+            R.id.btn_back -> findNavController().popBackStack()
             R.id.btn_delete -> {
                 if (!isUserInputValidated()) {
                     binding?.btnDelete?.isEnabled = false
@@ -214,52 +174,30 @@ class DetailFragment : Fragment(), View.OnClickListener {
                     binding?.btnDelete?.isEnabled = true
                     args.todo?.let { viewModel.deleteTodo(it) }
                     findNavController().popBackStack()
-
                 }
             }
-
             R.id.btn_add_or_update -> {
                 if (isUserInputValidated()) {
+                    val description = binding?.etDescription?.text.toString()
+                    val spinnerItem = binding?.spinner?.selectedItem.toString()
+                    val deadline = binding?.pickedDate?.text.toString()
+
+                    val todo = Model(
+                        id = if (viewModel.isOnUpdatingTodo) args.todo?.id ?: generateRandomId().toString() else generateRandomId().toString(),
+                        description = description,
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis(),
+                        changedAt = System.currentTimeMillis(),
+                        priority = selectedSpinnerItem(spinnerItem),
+                        deadline = convertDateToTimestamp(deadline),
+                        flag = false,
+                        lastUpdatedBy = "fed182",
+                        color = "#FFFFFF"
+                    )
+
                     if (viewModel.isOnUpdatingTodo) {
-                        if (isUserInputValidated()) {
-                            args.todo?.let {
-                                val description = binding?.etDescription?.text.toString()
-                                val spinnerItem = binding?.spinner?.selectedItem.toString()
-                                val deadline = binding?.pickedDate?.text.toString()
-
-
-
-                                val todo = Model(
-                                    id = it.id,
-                                    description = description,
-                                    priority = selectedSpinnerItem(spinnerItem),
-                                    deadline = convertDateToTimestamp(deadline),
-                                    flag = false,
-                                    createdAt = it.createdAt,
-                                    updatedAt = System.currentTimeMillis(),
-                                    changedAt = System.currentTimeMillis(),
-                                    lastUpdatedBy = "fed182",
-                                    color = "#FFFFFF"
-                                )
-                                updateTodoItem(todo)
-                            }
-                        }
+                        args.todo?.let { updateTodoItem(todo) }
                     } else {
-                        val description = binding?.etDescription?.text.toString()
-                        val spinnerItem = binding?.spinner?.selectedItem.toString()
-                        val deadline = binding?.pickedDate?.text.toString()
-                        val todo = Model(
-                            id = generateRandomId().toString(),
-                            description = description,
-                            createdAt = System.currentTimeMillis(),
-                            updatedAt = System.currentTimeMillis(),
-                            changedAt = System.currentTimeMillis(),
-                            priority = selectedSpinnerItem(spinnerItem),
-                            deadline = convertDateToTimestamp(deadline),
-                            flag = false,
-                            lastUpdatedBy = "fed182",
-                            color = "#FFFFFF"
-                        )
                         addTodoItem(todo)
                     }
                 } else {
@@ -268,6 +206,7 @@ class DetailFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+
 
     private fun addTodoItem(todo: Model) {
         lifecycleScope.launch {
@@ -302,15 +241,6 @@ class DetailFragment : Fragment(), View.OnClickListener {
         val description = binding?.etDescription?.text
         return (!description.isNullOrBlank())
     }
-    private fun selectedSpinnerItem(choosedPrio: String): Priority {
-        return when (choosedPrio) {
-            "low" -> Priority.LOW
-            "basic" -> Priority.BASIC
-            "important" -> Priority.IMPORTANT
-            else -> Priority.BASIC
-        }
-    }
-
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
