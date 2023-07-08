@@ -4,12 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yandextodo.core.vo.LoadResult
 import com.example.yandextodo.data.Model
+import com.example.yandextodo.data.TodoEntity
 import com.example.yandextodo.data.TodoRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel(private val repository: TodoRepository) : ViewModel() {
+class HomeViewModel(
+    private val repository: TodoRepository,
+) : ViewModel() {
 
 
     private val _todos: MutableStateFlow<LoadResult<List<Model>>> =
@@ -18,12 +22,11 @@ class HomeViewModel(private val repository: TodoRepository) : ViewModel() {
     val todos: StateFlow<LoadResult<List<Model>>>
         get() = _todos
 
-    private val checkboxStates: MutableMap<Int, Boolean> = mutableMapOf()
-
 
     suspend fun countElementsWithProperty(): Int {
         return repository.countElementsWithProperty()
     }
+
     fun getAllTodos() = viewModelScope.launch {
         try {
             repository.getAllTodos().collect { list ->
@@ -33,30 +36,34 @@ class HomeViewModel(private val repository: TodoRepository) : ViewModel() {
             _todos.value = LoadResult.Error(message = e.message.toString())
         }
     }
+
     fun deleteTodo(item: Model) = viewModelScope.launch {
         repository.deleteTodo(item)
     }
-    fun setCheckboxState(position: Int) = viewModelScope.launch {
-        val todos = _todos.value
-        if (todos is LoadResult.Success) {
 
-            val todoList = todos.data;
-            if (todoList?.indices?.contains(position) == true) {
-                val todo = todoList.getOrNull(position)
-                todo?.flag = true
-                todo?.let { repository.markAsDone(it) }
+
+        fun setCheckboxState(position: Int) = viewModelScope.launch {
+            val todos = _todos.value
+            if (todos is LoadResult.Success) {
+
+                val todoList = todos.data
+                if (todoList?.indices?.contains(position) == true) {
+                    val todo = todoList.getOrNull(position)
+                    todo?.flag = true
+                    todo?.let { repository.markAsDone(it) }
+                }
+            }
+        }
+
+        fun offCheckboxState(position: Int) = viewModelScope.launch {
+            val todos = _todos.value
+            if (todos is LoadResult.Success) {
+                val todoList = todos.data
+                if (todoList?.indices?.contains(position) == true) {
+                    val todo = todoList.getOrNull(position)
+                    todo?.flag = false
+                    todo?.let { repository.markAsNotDone(it) }
+                }
             }
         }
     }
-    fun offCheckboxState(position: Int) = viewModelScope.launch {
-        val todos = _todos.value
-        if (todos is LoadResult.Success) {
-            val todoList = todos.data
-            if (todoList?.indices?.contains(position) == true) {
-                val todo = todoList.getOrNull(position)
-                todo?.flag = false
-                todo?.let { repository.markAsNotDone(it) }
-            }
-        }
-    }
-}

@@ -48,6 +48,7 @@ dependencies {
     implementation "com.google.android.material:material:$rootProject.materialVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
     testImplementation "junit:junit:$rootProject.junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.junitAndroidTestVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.junitEspressoVersion"

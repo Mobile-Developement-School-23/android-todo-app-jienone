@@ -1,4 +1,4 @@
-package com.example.yandextodo.view.home
+package com.example.yandextodo.view.home.adapter
 
 import android.content.res.ColorStateList
 import android.graphics.Paint
@@ -14,14 +14,15 @@ import com.example.yandextodo.R
 import com.example.yandextodo.data.Model
 import com.example.yandextodo.data.Priority
 import com.example.yandextodo.databinding.ItemTodoBinding
+import com.example.yandextodo.view.home.HomeViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class TodoListAdapter(
     private val viewModel: HomeViewModel,
-    private val onItemClicked: ((Model) -> Unit)? = null
 ) : ListAdapter<Model, TodoListAdapter.TodoViewHolder>(TODO_ITEM_COMPARATOR) {
+    var onItemClicked: ((Model) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_todo, parent, false)
@@ -90,7 +91,8 @@ class TodoListAdapter(
 
         private fun updateCheckboxState(isChecked: Boolean, priority: Priority) {
             val checkboxColor = when {
-                isChecked && priority == Priority.IMPORTANT -> ContextCompat.getColor(itemView.context, R.color.DarkGreen)
+                isChecked && priority == Priority.IMPORTANT ->
+                    ContextCompat.getColor(itemView.context, R.color.DarkGreen)
                 priority == Priority.IMPORTANT -> ContextCompat.getColor(itemView.context, R.color.DarkRed)
                 isChecked -> ContextCompat.getColor(itemView.context, R.color.DarkGreen)
                 else -> ContextCompat.getColor(itemView.context, R.color.LightGray)

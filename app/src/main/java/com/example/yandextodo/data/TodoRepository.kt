@@ -120,6 +120,7 @@ class TodoRepository(
             apiService.updateItem(currentRevision, todo.id, ItemContainer(todo))
         }
     }
+
     suspend fun countElementsWithProperty(): Int {
         return withContext(dispatcher) {
             return@withContext todoLocalDataSource.countElementsWithProperty()

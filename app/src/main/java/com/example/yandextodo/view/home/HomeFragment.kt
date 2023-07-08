@@ -23,6 +23,7 @@ import com.example.yandextodo.data.TodoDatabase
 import com.example.yandextodo.data.TodoLocalDataSource
 import com.example.yandextodo.data.TodoRepository
 import com.example.yandextodo.databinding.FragmentHomeBinding
+import com.example.yandextodo.view.home.adapter.TodoListAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -64,6 +65,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
         )
 
 
+
+
         tvCompleted = binding.tvCompleted
 
         var isVisible = true
@@ -86,7 +89,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
         binding.rvTodos.layoutManager = LinearLayoutManager(requireContext())
         binding.rvTodos.adapter = todoListAdapter
 
-        val swipeGesture = object : SwipeGesture(requireContext(), viewModel, adapter = todoListAdapter) {}
+        val swipeGesture = object : SwipeGesture(
+            requireContext(),
+            viewModel,
+            todoListAdapter
+        ) {}
         val itemTouchHelper = ItemTouchHelper(swipeGesture)
         itemTouchHelper.attachToRecyclerView(binding.rvTodos)
 
@@ -96,7 +103,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     when (loadResult) {
                         is LoadResult.Success -> {
                             showLoadingState(false)
-
                             todoListAdapter.submitList(loadResult.data)
 
                             if (loadResult.data.isNullOrEmpty()) {
@@ -145,6 +151,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private fun showEmptyListState(state: Boolean) {
         binding.tvEmptyState.visibility = if (state) View.VISIBLE else View.GONE
     }
+
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

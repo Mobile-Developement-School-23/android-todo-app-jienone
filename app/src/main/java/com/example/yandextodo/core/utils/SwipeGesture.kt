@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yandextodo.R
 import com.example.yandextodo.view.home.HomeViewModel
-import com.example.yandextodo.view.home.TodoListAdapter
+import com.example.yandextodo.view.home.adapter.TodoListAdapter
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 abstract class SwipeGesture(

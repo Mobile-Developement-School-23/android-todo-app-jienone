@@ -37,5 +37,6 @@ interface TodoDao {
     suspend fun markAsDone(todoEntity: TodoEntity)
     @Update
     suspend fun markAsNotDone(todoEntity: TodoEntity)
+
 }
 
