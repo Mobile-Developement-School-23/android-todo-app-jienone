@@ -146,7 +146,6 @@ class DetailFragment : Fragment(), View.OnClickListener {
     private fun populateData() {
         if (args.todo != null) {
             binding?.etDescription?.setText(args.todo?.description)
-            //15.06
             val options = resources.getStringArray(R.array.options)
 
             val selectedOption = args.todo?.priority

@@ -31,15 +31,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yandextodo.R
-import com.example.yandextodo.view.screens.detail.composables.DeleteButton
-import com.example.yandextodo.view.screens.detail.composables.DropDownMenu
-import com.example.yandextodo.view.screens.detail.composables.PickDeadline
-import com.example.yandextodo.view.screens.detail.composables.UserInput
+import com.example.yandextodo.view.detail.DetailViewModel
+import com.example.yandextodo.view.screens.detail.components.DeleteButton
+import com.example.yandextodo.view.screens.detail.components.DropDownMenu
+import com.example.yandextodo.view.screens.detail.components.PickDeadline
+import com.example.yandextodo.view.screens.detail.components.UserInput
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun DetailFragmentUI() {
+fun DetailFragmentUI(
+    viewModel: DetailViewModel
+) {
     Scaffold(
         Modifier
             .fillMaxSize(),
@@ -63,7 +66,7 @@ fun DetailFragmentUI() {
                         )
                     }
                     TextButton(
-                        onClick = { /*TODO*/ },
+                        onClick = { },
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                     ) {
@@ -110,5 +113,5 @@ fun DetailFragmentUI() {
 @Preview
 @Composable
 fun DetailPrev() {
-    DetailFragmentUI()
+//    DetailFragmentUI()
 }

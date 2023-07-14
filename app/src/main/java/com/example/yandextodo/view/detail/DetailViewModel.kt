@@ -7,18 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yandextodo.data.Model
 import com.example.yandextodo.data.TodoRepository
+import com.example.yandextodo.data.model.Priority
+import com.example.yandextodo.data.model.TodoEntity
 
 import kotlinx.coroutines.launch
 
 class DetailViewModel(private val repository: TodoRepository) : ViewModel() {
 
-
     fun addTodo(todo: Model) = viewModelScope.launch {
-        try {
-            repository.addTodo(todo)
-        } catch (e: Exception) {
-            Log.e("ADD_TODO_EXCEPTION", e.toString())
-        }
+        repository.addTodo(todo)
     }
     fun updateTodo(todo: Model) = viewModelScope.launch {
         repository.updateTodo(todo)
@@ -33,5 +30,22 @@ class DetailViewModel(private val repository: TodoRepository) : ViewModel() {
 
     fun setIsOnUpdatingTodo(state: Boolean) {
         _isOnUpdatingTodo = state
+    }
+
+
+    fun createTodoEntity(description: String): TodoEntity {
+        // Create and return the TodoEntity instance based on the input data
+        return TodoEntity(
+            id = 0, // Assign the appropriate ID
+            description = description,
+            priority = Priority.BASIC, // Assign the appropriate priority
+            deadline = null, // Assign the appropriate deadline
+            flag = false, // Assign the appropriate flag
+            createdAt = System.currentTimeMillis(), // Assign the appropriate created timestamp
+            changedAt = System.currentTimeMillis(), // Assign the appropriate changed timestamp
+            updatedAt = System.currentTimeMillis(), // Assign the appropriate updated timestamp
+            lastUpdatedBy = "user", // Assign the appropriate last updated by value
+            color = null // Assign the appropriate color
+        )
     }
 }
