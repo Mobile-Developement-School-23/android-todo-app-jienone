@@ -9,6 +9,7 @@
     <string name="content_desc_back_to_previous_screen">вернуться на предыдущий экран</string>
     <string name="add">Сохранить</string>
     <string name="delete">Удалить</string>
+    <string name="importance">Важность</string>
     <string name="empty_et_desc">Введите текст, чтобы продолжить</string>
     <string name="update">Обновить</string>
     <string name="btn_info">INFO</string>

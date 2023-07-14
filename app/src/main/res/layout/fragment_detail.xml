@@ -144,7 +144,6 @@
             android:background="@null"
             android:gravity="top"
             android:hint="Что нужно сделать..."
-
             android:imeOptions="actionDone"
             android:inputType="textMultiLine"
             android:minHeight="89dp"
